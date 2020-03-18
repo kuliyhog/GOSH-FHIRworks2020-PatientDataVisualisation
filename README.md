@@ -9,23 +9,24 @@
 * **Linux/Mac**
     
   1. Install Python 3.7 or above
-      * sudo apt-get update
-      * sudo apt-get install python3.8
+      * ```sudo apt-get update```
+      * ```sudo apt-get install python3.8```
       
   2. Install Virtualenv
-      * pip install virtualenv
+      * ```pip install virtualenv```
       
   3. Setup Virtual Environment
-      * virtualenv env
-      * source env/bin/activate
+      * ```virtualenv env```
+      * ```source env/bin/activate```
       
   4. Install Packages
-      * pip install flask
-      * pip install FHIR-Parser
+      * ```pip install flask```
+      * ```pip install FHIR-Parser```
       
   5. Setup Flask Environment
-      * $env:FLASK_ENV = "development"
-      * $env:FLASK_APP = "app.py"
+      * ```source env/bin/activate```
+      * ```$env:FLASK_ENV = "development"```
+      * ```$env:FLASK_APP = "app.py"```
   
 ## 2. Starting the WebApp
 
@@ -33,12 +34,12 @@ Make sure to have the [GOSH-FHIRworks2020 API](https://github.com/greenfrogs/FHI
 
 * **Windows**
 
-  * run **run.ps1** with Powershell or 
-  * In Powershell, **flask run --port=2000**
+  * Run **run.ps1** with Powershell or 
+  * In Powershell, do ```.\env\Scripts\activate.ps1``` then ```flask run --port=2000```
   
 * **Linux/Mac**
-
-  1. In Bash/Terminal **flask run --port=2000**
+  * In Bash/Terminal, do ```source env/bin/activate```
+  * then do ```flask run --port=2000```
 
 
 ## 3. List of API Endpoints
