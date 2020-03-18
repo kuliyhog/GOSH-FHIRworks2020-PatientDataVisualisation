@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div style="position: relative; float: left;">
+    <h1>Details of {{patient.name.given + " " + patient.name.family}}</h1>
+    <p>Hold shift and click the table headers to sort multiple columns</p>
+</div>
+
+<br><br><br><br>
+<table class="table table-bordered table-striped" id="patientInfo">
+    <thead>    
+        <tr>
+            <th style="width:20%;">Details</th>
+            <th style="width:80%;"></th>
+        </tr>
+    </thead>
+    <tbody id="content">
+        <tr>
+            <th>UUID</th>
+            <th>{{patient.uuid}}</th>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <th>{{patient.name.full_name}}</th>
+        </tr>
+        <tr>
+            <th>Family Name</th>
+            <th>{{patient.name.family}}</th>
+        </tr>
+        <tr>
+            <th>Given Name</th>
+            <th>{{patient.name.given}}</th>
+        </tr>
+        <tr>
+            <th>Telecoms</th>
+            <th>
+                {% for telecom in patient.telecoms %}
+                {{telecom}}<br>
+                {% endfor %}
+            </th>
+        </tr>
+        <tr>
+            <th>Gender</th>
+            <th>{{patient.gender}}</th>
+        </tr>
+        <tr>
+            <th>Birth Date</th>
+            <th>{{patient.birth_date}}</th>
+        </tr>
+        <tr>
+            <th>Age (Years)</th>
+            <th>{{patient.age()}}</th>
+        </tr>
+        <tr>
+            <th>Address</th>
+            <th>
+                {% for address in patient.addresses %}
+                {{address}}<br>
+                Latitude: {{address.latitude}}<br>
+                Longitude: {{address.longitude}}<br>
+                {% endfor %}
+            </th>
+        </tr>
+        <tr>
+            <th>Marital Status</th>
+            <th>{{patient.marital_status}}</th>
+        </tr>
+        <tr>
+            <th>Multiple Birth</th>
+            <th>{{patient.multiple_birth}}</th>
+        </tr>
+        <tr>
+            <th>Languages</th>
+            <th>
+                {% for language in patient.communications.languages %}
+                {{language}}<br>
+                {% endfor %}
+            </th>
+        </tr>
+        <tr>
+            <th>Extensions</th>
+            <th>
+                {% for extension in patient.extensions %}
+                {{extension}}<br>
+                {% endfor %}
+            </th>
+        </tr>
+        <tr>
+            <th>Identifiers</th>
+            <th>
+                {% for identifier in patient.identifiers %}
+                    {% if loop.index == 1 %}
+                        UUID: 
+                    {% endif %}
+                    {{identifier}}<br>
+                {% endfor %}
+            </th>
+        </tr>
+        
+    </tbody>
+</table>
+<br><br><br>
+
+<div style="position: relative; float: left;">
+    <h1>Observations of {{patient.name.given + " " + patient.name.family}}</h1>
+    <p>Hold shift and click the table headers to sort multiple columns</p>
+</div>
+<div style="position: relative; float: right;">
+    <a href="/statistics/{{patient.uuid}}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true" style="margin-top: 10px;" target="_blank">Graphs</a>
+</div>
+
+<br><br><br><br>
+<table class="table table-bordered table-striped" id="patientObservations">
+    <thead>    
+        <tr>
+            <th>Type</th>
+            <th>Components</th>
+            <th>Reading</th>
+            <th>Time Issued</th>
+            <th>ID</th>
+        </tr>
+    </thead>
+    <tbody id="content">
+        {% for observation in observations %}
+        <tr>
+            <th>{{observation.type}}</th>
+            <th>
+                {% for component in observation.components %}
+                {{component.display}}
+                <br>
+                {% endfor %}
+            </th>
+            <th>
+                {% for component in observation.components %}
+                {{component.quantity()}}
+                <br>
+                {% endfor %}
+            </th>
+            <th>{{observation.effective_datetime}}</th>
+            <th>{{observation.uuid}}</th>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br><br><br><br>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        $('#patientObservations').DataTable({
+        rowReorder: true,
+        "iDisplayLength": 50,
+        "order": [],
+        "bsort": true
+    });
+
+    $('#patientInfo').DataTable({
+        rowReorder: true,
+        "iDisplayLength": 50,
+        "order": [],
+        "bsort": true
+    });
+    } );
+</script>
+{% endblock %}

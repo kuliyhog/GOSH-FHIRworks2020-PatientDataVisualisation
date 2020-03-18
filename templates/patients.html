@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+<div>
+    <h1>List of Patients</h1>
+    <p>Hold shift and click the table headers to sort multiple columns</p>
+</div>
+
+<div>
+    <table class="table table-bordered table-hover" id="myTable">
+        <thead>
+            <tr>
+                <th style="width:20%;">Name</th>
+                <th style="width:10%;">Gender</th>
+                <th style="width:15%;">Age</th>
+                <th style="width:25%;">Location</th>
+                <th style="width:30%;">ID</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            {% for patient in patients %}
+            <tr class="clickable-row" data-href="patient/{{patient.uuid}}" id={{patient.uuid}}>
+                <th>{{patient.name.given + " " + patient.name.family}}</th>
+                <th>{{patient.gender}}</th>
+                <th>{{patient.age()}}</th>
+                <th>{{patient.addresses[0].country + ", " + patient.addresses[0].state}}</th>
+                <th>{{patient.uuid}}</th>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br><br>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+
+    $('#myTable').DataTable({
+            rowReorder: true,
+            "iDisplayLength": 25,
+            "order": [],
+            "bsort": true
+    });
+</script>
+{% endblock %}

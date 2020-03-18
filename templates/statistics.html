@@ -1,0 +1,271 @@
+{% extends 'base.html' %}
+
+
+{% block head %}
+
+{% endblock %}
+
+
+
+{% block body %}
+
+<h1>Graphs for {{patient.name.given + " " + patient.name.family}}</h1>
+<br>
+<div class="card">
+    <div class="card-header tab-card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="one-tab" data-toggle="tab" href="#bpgraph" role="tab" aria-controls="One" aria-selected="true">Blood Pressure</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="two-tab" data-toggle="tab" href="#hrgraph" role="tab" aria-controls="Two" aria-selected="false">Heart Rate</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="three-tab" data-toggle="tab" href="#bmigraph" role="tab" aria-controls="Three" aria-selected="false">BMI</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active p-3" id="bpgraph" role="tabpanel" aria-labelledby="one-tab">
+            <h5 class="card-title">Blood Pressure</h5>       
+            <canvas id="bpGraph"></canvas>
+        </div>
+        <div class="tab-pane fade p-3" id="hrgraph" role="tabpanel" aria-labelledby="two-tab">
+            <h5 class="card-title">Heart Rate</h5>        
+            <canvas id="hrGraph"></canvas>
+        </div>
+        <div class="tab-pane fade p-3" id="bmigraph" role="tabpanel" aria-labelledby="three-tab">
+            <h5 class="card-title">BMI</h5>
+            <canvas id="bmiGraph"></canvas>
+        </div>
+    </div>
+</div>
+
+<br><br><br>
+
+{% endblock %}
+
+
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js"></script>
+
+<script>
+function formatTime(dates) {
+    for (var i in dates) {
+        dates[i] = new Date(parseInt(dates[i]));
+    }
+}
+
+// Blood Pressure
+var bpdates = "{{bp_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var dbp = "{{bp_dict.dbp}}".slice(1,-1).replace(/\s/g, "").split(",");
+var sbp = "{{bp_dict.sbp}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(bpdates);
+
+// Heart Rate
+var hrdates = "{{hr_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var hr = "{{hr_dict.hr}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(hrdates);
+
+// Respiratory Rate
+var rrdates = "{{rr_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var rr = "{{rr_dict.rr}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(rrdates);
+
+// Weight and Height
+var bwdates = "{{bw_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bhdates = "{{bh_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bw = "{{bw_dict.bw}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bh = "{{bh_dict.bh}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(bwdates);
+formatTime(bhdates);
+
+// BMI and BMI Percentile
+var bmidates = "{{bmi_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bmipdates = "{{bmip_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bmi = "{{bmi_dict.bmi}}".slice(1,-1).replace(/\s/g, "").split(",");
+var bmip = "{{bmip_dict.bmip}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(bmidates);
+formatTime(bmipdates);
+
+console.log(bmidates);
+var bpg = document.getElementById('bpGraph').getContext('2d');
+var bpChart = new Chart(bpg, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+        labels: bpdates,
+        datasets: [{
+            label: 'Diastolic Blood Pressure',
+            borderColor: 'rgb(30, 144, 255)',
+            data: dbp,
+            fill: false
+        },
+        {
+            label: 'Systolic Blood Pressure',
+            borderColor: 'rgb(255, 99, 132)',
+            data: sbp,
+            fill: false
+        }]
+    },
+    // Configuration options go here
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time', 
+                time: {
+                    tooltipFormat: "LLLL"
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date"
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                   stepSize: 5,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "mm[Hg]",
+                }
+            }],
+        }
+    }
+});
+
+var hrg = document.getElementById('hrGraph').getContext('2d');
+var hrChart = new Chart(hrg, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+        labels: hrdates,
+        datasets: [{
+            label: 'Heart Rate',
+            borderColor: 'rgb(30, 144, 255)',
+            data: hr,
+            fill: false
+        },
+        {
+            label: 'Respiratory Rate',
+            borderColor: 'rgb(255, 99, 132)',
+            data: rr,
+            fill: false
+        }]
+    },
+    // Configuration options go here
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time', 
+                time: {
+                    tooltipFormat: "LLLL",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date"
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                   stepSize: 5,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "/Min",
+                }
+            }],
+        }
+    }
+});
+
+var bmig = document.getElementById('bmiGraph').getContext('2d');
+var bmiChart = new Chart(bmig, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+        labels: bwdates,
+        datasets: [{
+            label: 'Body Weight',
+            borderColor: 'rgb(30, 144, 255)',
+            yAxisID: 'bhw',
+            data: bw,
+            fill: false
+        },
+        {
+            label: 'Body Height',
+            borderColor: 'rgb(255, 99, 132)',
+            yAxisID: 'bhw',
+            data: bh,
+            fill: false
+        },
+        {
+            label: 'BMI Percentile',
+            yAxisID: 'bmi',
+            borderColor: 'rgb(0, 100, 0)',
+            data: bmip,
+            fill: false
+        },
+        {
+            label: 'BMI',
+            yAxisID: 'bmi',
+            borderColor: 'rgb(128, 128, 0)',
+            data: bmi,
+            fill: false
+        }]
+    },
+    // Configuration options go here
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time', 
+                time: {
+                    tooltipFormat: "LLLL",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date"
+                }
+            }],
+            yAxes: [{
+                id: 'bhw',
+                position: 'left',
+                ticks: {
+                   stepSize: 5,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "",
+                },
+            }, 
+            {
+                id: 'bmi',
+                position: 'right',
+                ticks: {
+                   stepSize: 5,
+                   min: 0,
+                   max: 100,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "",
+                },
+            }],
+        }
+    }
+});
+
+
+$('#graph-list a').on('click', function (e) {
+  e.preventDefault()
+  $(this).tab('show')
+})
+</script>
+
+
+{% endblock %}
