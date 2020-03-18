@@ -23,7 +23,7 @@
         <tbody>
 
             {% for patient in patients %}
-            <tr class="clickable-row" data-href="patient/{{patient.uuid}}" id={{patient.uuid}}>
+            <tr>
                 <th>{{patient.name.given + " " + patient.name.family}}</th>
                 <th>{{patient.gender}}</th>
                 <th>{{patient.age()}}</th>
@@ -39,18 +39,22 @@
 
 {% block scripts %}
 <script>
-    $('#myTable').DataTable({
+    $(document).ready(function($) {
+		var patientTable = $('#myTable').DataTable({
             rowReorder: true,
-            "iDisplayLength": 1000000000,
+            "iDisplayLength": 25,
             "order": [],
             "bsort": true
+		});
+		
+		$('#myTable tbody').on('click', 'tr', function(){
+            window.location = "/patient/" + patientTable.row(this).data()[4]
+        })
+		
     });
 
-    jQuery(document).ready(function($) {
-        $(".clickable-row").click(function() {
-            window.location = $(this).data("href");
-        });
-    });
+	
 
+    
 </script>
 {% endblock %}
