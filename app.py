@@ -187,8 +187,6 @@ def getstatistics(id):
                 ps_dict["ps"].append(observation.components[0].value)
                 break
 
-    print(fhir.get_observation("a4d06c22-e092-40fe-bfd0-1b217f897818").components[0].display)
-
     return render_template('statistics.html', patient=patient, bp_dict=bp_dict, hr_dict=hr_dict, rr_dict=rr_dict, bw_dict=bw_dict, bh_dict=bh_dict, bmi_dict=bmi_dict, bmip_dict=bmip_dict, ps_dict=ps_dict)
 
 
