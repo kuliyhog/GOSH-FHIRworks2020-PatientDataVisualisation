@@ -101,8 +101,6 @@ formatTime(bmipdates);
 var psdates = "{{ps_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
 var ps = "{{ps_dict.ps}}".slice(1,-1).replace(/\s/g, "").split(",");
 formatTime(psdates);
-console.log(ps);
-console.log(psdates);
 
 var bpg = document.getElementById('bpGraph').getContext('2d');
 var bpChart = new Chart(bpg, {
