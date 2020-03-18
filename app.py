@@ -60,6 +60,12 @@ def getstatistics(id):
         "bmip": []
     }
 
+    ps_dict = {
+        "date": [],
+        "ps": []
+    }
+
+
     temp_bp_dates = []
     bp_observations = []
     temp_hr_dates = []
@@ -76,6 +82,11 @@ def getstatistics(id):
     temp_bmip_dates = []
     bmip_observations = []
     
+
+    temp_ps_dates = []
+    ps_observations = []
+
+
     for observation in observations:
         if observation.components[0].display == "Blood Pressure":
             bp_observations.append(observation)
@@ -104,6 +115,11 @@ def getstatistics(id):
         if observation.components[0].display == "Body mass index (BMI) [Percentile] Per age and gender":
             bmip_observations.append(observation)
             temp_bmip_dates.append(observation.effective_datetime)
+
+        if observation.components[0].display == "Pain severity - 0-10 verbal numeric rating [Score] - Reported":
+            ps_observations.append(observation)
+            temp_ps_dates.append(observation.effective_datetime)
+            
     
     temp_hr_dates.sort()
     temp_bp_dates.sort()
@@ -112,6 +128,7 @@ def getstatistics(id):
     temp_bh_dates.sort()
     temp_bmi_dates.sort()
     temp_bmip_dates.sort()
+    temp_ps_dates.sort()
 
     for i in range(0, len(temp_bp_dates)):
         for observation in bp_observations:
@@ -124,46 +141,55 @@ def getstatistics(id):
     for i in range(0, len(temp_hr_dates)):
         for observation in hr_observations:
             if temp_hr_dates[i] == observation.effective_datetime:
-                hr_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                hr_dict["date"].append(int(time.mktime(temp_hr_dates[i].timetuple())) * 1000)
                 hr_dict["hr"].append(observation.components[0].value)
                 break
 
     for i in range(0, len(temp_rr_dates)):
         for observation in rr_observations:
             if temp_rr_dates[i] == observation.effective_datetime:
-                rr_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                rr_dict["date"].append(int(time.mktime(temp_rr_dates[i].timetuple())) * 1000)
                 rr_dict["rr"].append(observation.components[0].value)
                 break
 
     for i in range(0, len(temp_bw_dates)):
         for observation in bw_observations:
             if temp_bw_dates[i] == observation.effective_datetime:
-                bw_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                bw_dict["date"].append(int(time.mktime(temp_bw_dates[i].timetuple())) * 1000)
                 bw_dict["bw"].append(observation.components[0].value)
                 break
 
     for i in range(0, len(temp_bh_dates)):
         for observation in bh_observations:
             if temp_bh_dates[i] == observation.effective_datetime:
-                bh_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                bh_dict["date"].append(int(time.mktime(temp_bh_dates[i].timetuple())) * 1000)
                 bh_dict["bh"].append(observation.components[0].value)
                 break
 
     for i in range(0, len(temp_bmi_dates)):
         for observation in bmi_observations:
             if temp_bmi_dates[i] == observation.effective_datetime:
-                bmi_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                bmi_dict["date"].append(int(time.mktime(temp_bmi_dates[i].timetuple())) * 1000)
                 bmi_dict["bmi"].append(observation.components[0].value)
                 break
 
     for i in range(0, len(temp_bmip_dates)):
         for observation in bmip_observations:
             if temp_bmip_dates[i] == observation.effective_datetime:
-                bmip_dict["date"].append(int(time.mktime(temp_bp_dates[i].timetuple())) * 1000)
+                bmip_dict["date"].append(int(time.mktime(temp_bmip_dates[i].timetuple())) * 1000)
                 bmip_dict["bmip"].append(observation.components[0].value)
                 break
 
-    return render_template('statistics.html', patient=patient, bp_dict=bp_dict, hr_dict=hr_dict, rr_dict=rr_dict, bw_dict=bw_dict, bh_dict=bh_dict, bmi_dict=bmi_dict, bmip_dict=bmip_dict)
+    for i in range(0, len(temp_ps_dates)):
+        for observation in ps_observations:
+            if temp_ps_dates[i] == observation.effective_datetime:
+                ps_dict["date"].append(int(time.mktime(temp_ps_dates[i].timetuple())) * 1000)
+                ps_dict["ps"].append(observation.components[0].value)
+                break
+
+    print(fhir.get_observation("a4d06c22-e092-40fe-bfd0-1b217f897818").components[0].display)
+
+    return render_template('statistics.html', patient=patient, bp_dict=bp_dict, hr_dict=hr_dict, rr_dict=rr_dict, bw_dict=bw_dict, bh_dict=bh_dict, bmi_dict=bmi_dict, bmip_dict=bmip_dict, ps_dict=ps_dict)
 
 
 @app.route('/averageage')

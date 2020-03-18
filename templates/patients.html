@@ -39,17 +39,18 @@
 
 {% block scripts %}
 <script>
+    $('#myTable').DataTable({
+            rowReorder: true,
+            "iDisplayLength": 1000000000,
+            "order": [],
+            "bsort": true
+    });
+
     jQuery(document).ready(function($) {
         $(".clickable-row").click(function() {
             window.location = $(this).data("href");
         });
     });
 
-    $('#myTable').DataTable({
-            rowReorder: true,
-            "iDisplayLength": 25,
-            "order": [],
-            "bsort": true
-    });
 </script>
 {% endblock %}

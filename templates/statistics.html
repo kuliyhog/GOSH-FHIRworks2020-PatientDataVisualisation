@@ -15,13 +15,16 @@
     <div class="card-header tab-card-header">
         <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-                <a class="nav-link" id="one-tab" data-toggle="tab" href="#bpgraph" role="tab" aria-controls="One" aria-selected="true">Blood Pressure</a>
+                <a class="nav-link active" id="one-tab" data-toggle="tab" href="#bpgraph" role="tab" aria-controls="One" aria-selected="true">Blood Pressure</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="two-tab" data-toggle="tab" href="#hrgraph" role="tab" aria-controls="Two" aria-selected="false">Heart Rate</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="three-tab" data-toggle="tab" href="#bmigraph" role="tab" aria-controls="Three" aria-selected="false">BMI</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="four-tab" data-toggle="tab" href="#psgraph" role="tab" aria-controls="Four" aria-selected="false">Pain Severity</a>
             </li>
         </ul>
     </div>
@@ -38,6 +41,10 @@
         <div class="tab-pane fade p-3" id="bmigraph" role="tabpanel" aria-labelledby="three-tab">
             <h5 class="card-title">BMI</h5>
             <canvas id="bmiGraph"></canvas>
+        </div>
+        <div class="tab-pane fade p-3" id="psgraph" role="tabpanel" aria-labelledby="four-tab">
+            <h5 class="card-title">Pain Severity</h5>
+            <canvas id="psGraph"></canvas>
         </div>
     </div>
 </div>
@@ -90,7 +97,13 @@ var bmip = "{{bmip_dict.bmip}}".slice(1,-1).replace(/\s/g, "").split(",");
 formatTime(bmidates);
 formatTime(bmipdates);
 
-console.log(bmidates);
+// Pain Severity
+var psdates = "{{ps_dict.date}}".slice(1,-1).replace(/\s/g, "").split(",");
+var ps = "{{ps_dict.ps}}".slice(1,-1).replace(/\s/g, "").split(",");
+formatTime(psdates);
+console.log(ps);
+console.log(psdates);
+
 var bpg = document.getElementById('bpGraph').getContext('2d');
 var bpChart = new Chart(bpg, {
     // The type of chart we want to create
@@ -99,13 +112,13 @@ var bpChart = new Chart(bpg, {
     data: {
         labels: bpdates,
         datasets: [{
-            label: 'Diastolic Blood Pressure',
+            label: 'Diastolic Blood Pressure (mm[Hg])',
             borderColor: 'rgb(30, 144, 255)',
             data: dbp,
             fill: false
         },
         {
-            label: 'Systolic Blood Pressure',
+            label: 'Systolic Blood Pressure (mm[Hg])',
             borderColor: 'rgb(255, 99, 132)',
             data: sbp,
             fill: false
@@ -145,13 +158,13 @@ var hrChart = new Chart(hrg, {
     data: {
         labels: hrdates,
         datasets: [{
-            label: 'Heart Rate',
+            label: 'Heart Rate (/min)',
             borderColor: 'rgb(30, 144, 255)',
             data: hr,
             fill: false
         },
         {
-            label: 'Respiratory Rate',
+            label: 'Respiratory Rate (/min)',
             borderColor: 'rgb(255, 99, 132)',
             data: rr,
             fill: false
@@ -191,28 +204,28 @@ var bmiChart = new Chart(bmig, {
     data: {
         labels: bwdates,
         datasets: [{
-            label: 'Body Weight',
+            label: 'Body Weight (kg)',
             borderColor: 'rgb(30, 144, 255)',
             yAxisID: 'bhw',
             data: bw,
             fill: false
         },
         {
-            label: 'Body Height',
+            label: 'Body Height (cm)',
             borderColor: 'rgb(255, 99, 132)',
             yAxisID: 'bhw',
             data: bh,
             fill: false
         },
         {
-            label: 'BMI Percentile',
+            label: 'BMI Percentile (%)',
             yAxisID: 'bmi',
             borderColor: 'rgb(0, 100, 0)',
             data: bmip,
             fill: false
         },
         {
-            label: 'BMI',
+            label: 'BMI (kg/m2)',
             yAxisID: 'bmi',
             borderColor: 'rgb(128, 128, 0)',
             data: bmi,
@@ -255,6 +268,48 @@ var bmiChart = new Chart(bmig, {
                     display: true,
                     labelString: "",
                 },
+            }],
+        }
+    }
+});
+
+var psg = document.getElementById('psGraph').getContext('2d');
+var psChart = new Chart(psg, {
+    // The type of chart we want to create
+    type: 'line',
+    // The data for our dataset
+    data: {
+        labels: psdates,
+        datasets: [{
+            label: 'Pain Severity (1-10)',
+            borderColor: 'rgb(30, 144, 255)',
+            data: ps,
+            fill: false
+        }]
+    },
+    // Configuration options go here
+    options: {
+        scales: {
+            xAxes: [{
+                type: 'time', 
+                time: {
+                    tooltipFormat: "LLLL",
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Date"
+                }
+            }],
+            yAxes: [{
+                ticks: {
+                   stepSize: 1,
+                   min: 0,
+                   max: 10,
+                },
+                scaleLabel: {
+                    display: true,
+                    labelString: "Score of 1 to 10",
+                }
             }],
         }
     }
