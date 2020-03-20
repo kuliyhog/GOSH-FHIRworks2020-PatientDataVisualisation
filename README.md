@@ -9,8 +9,8 @@
   * If setup.ps1 does not work, then do in Powershell
     * ```pip install virtualenv```
     * ```virtualenv env```
-    * ```pip install -r .\requirements.txt```
     * ```.\env\Scripts\activate.ps1```
+    * ```pip install -r .\requirements.txt```
     * ```$env:FLASK_ENV = "development"```
     * ```$env:FLASK_APP = "app.py"```
     
