@@ -1,4 +1,4 @@
-# GOSH-FHIRworks2020-PatientWebApp
+# GOSH-FHIRworks2020-PatientDataVisualisation
 
 ## 1. Setting up
 * **Windows Powershell**
